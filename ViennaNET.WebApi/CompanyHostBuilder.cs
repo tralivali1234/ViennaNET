@@ -13,7 +13,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -45,6 +44,7 @@ namespace ViennaNET.WebApi
     private Action<IServiceCollection, IConfiguration, object> _configureContainerAction;
     private Action<IApplicationBuilder, object, IConfiguration> _initializeContainerAction;
     private readonly List<Action<IServiceCollection, IConfiguration>> _servicesToRegister;
+    private readonly List<Action<IServiceCollection, object, IConfiguration>> _servicesToRegisterInContainer;
 
     private Action<IConfiguration> _onStartAction;
     private Action<IConfiguration> _onStopAction;
@@ -59,6 +59,7 @@ namespace ViennaNET.WebApi
       _addMiddlewareActions = new List<Action<IApplicationBuilder>>();
       _servicesToRegister = new List<Action<IServiceCollection, IConfiguration>>();
       _mvcBuilderActions = new List<Action<IMvcCoreBuilder, IConfiguration>>();
+      _servicesToRegisterInContainer = new List<Action<IServiceCollection, object, IConfiguration>>();
     }
 
     /// <summary>
@@ -93,7 +94,15 @@ namespace ViennaNET.WebApi
       };
 
       config.AddInMemoryCollection(serviceAssemblyProps);
-      config.AddJsonFile(Path.GetDirectoryName(_serviceAssembly.Location) + "/conf/appsettings.json");
+
+      var configFileBasePath = Path.GetDirectoryName(_serviceAssembly.Location) + "/conf/";
+
+      config.AddJsonFile(configFileBasePath + "appsettings.json")
+        .AddJsonFile(
+          configFileBasePath + $"appsettings.{HostingEnvironment.EnvironmentName}.json", optional: true);
+
+      config.AddEnvironmentVariables();
+
       Configuration = config.Build();
     }
 
@@ -120,6 +129,7 @@ namespace ViennaNET.WebApi
     {
       ConfigureBaseServices(services);
       _configureContainerAction?.Invoke(services, Configuration, _container);
+      _servicesToRegisterInContainer.ForEach(x => x(services, _container, Configuration));
     }
 
     // TODO: нужно доработать, сделать корректные интерфейсы
