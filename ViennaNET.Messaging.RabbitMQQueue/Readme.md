@@ -21,7 +21,8 @@ ___
               "replyQueue": "<name of the queue for receiving messages>",
               "lifetime": "<lifetime of messages in TimeSpan format>",
               "customHeaders": {"values": []} // additional headers for working with queues
-              "serviceHealthDependent": <flag of the dependence of the subscription to the queue on the state of the service obtained as a result of the diagnostic call true | false>
+              "serviceHealthDependent": <flag of the dependence of the subscription to the queue on the state of the service 
+                                         obtained as a result of the diagnostic call true | false>
               // the parameters below apply only to the RabbitMQ queue
               "exchangeType": "<type of exchange point>",
               "exchangeName": "<exchange point name>",
@@ -32,6 +33,7 @@ ___
 ```
 
 > RabbitMQ configuration features
+> * processingtype - can take the value Subscribe or SubscribeAndReply to create a subscriber that reads messages as they arrive (by event), or for the same subscriber, but with the ability to send a response message, respectively
 > * exchangeType - can take one of the values ​​direct | topic | fanout | headers, if not specified, then by default fanout
 > * exchangeName - if not specified, then the exchange point is not automatically created
 > * queuename - if not specified, then the queue is not automatically created

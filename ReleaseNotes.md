@@ -1,4 +1,32 @@
-# v0007
+# v0010 (29.10.2020)
+
+### Release Summary
+1. Change Messaging
+
+
+# v0009 (4.10.2020)
+
+### Release Summary
+1. Added ORM DB2 integration
+2. Change Messaging pooling process
+3. Added LoggingAdapterProvider - wrapper over ViennaNET.Logging.Logger to switch to standard Microsoft.Extensions.Logging.ILogger<T>. Now ILogger<T> can be used, but internally it will work like ViennaNET.Logging.Logger.
+After the complete translation of the libraries to ILogger<T>, the ViennaNET.Logging library will be abandoned
+
+### Breaking Changes
+In order for the current logging option to continue working as it is, you need to add the section to the service configuration file:
+
+```
+    "Logging": {
+        "UseLegacyLogger": true,
+        "LogLevel": {
+          "Default": "Trace",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+    }
+```	
+
+# v0007 (30.07.2020)
 
 ### Release Summary
 1. For Rabbit queues, added the ability to create additional bindings through the routings configuration. 
@@ -13,8 +41,8 @@ the exchange point to the queues.
 2. For HttpClients added Basic-authentication
 3. Added optional loading of an additional configuration file, which is selected by the value of the environment variable:
    https://docs.microsoft.com/en-us/aspnet/core/fundamentals/environments?view=aspnetcore-3.1
-   
-# v0006
+
+# v0006 (30.06.2020)
 
 ### Release Summary
 1. MQSeriesQueue - selectors improved
@@ -22,13 +50,13 @@ the exchange point to the queues.
 3. HttpClients.NoAuthentication - added the ability to anonymously connect to other services
 4. WebApi.CompanyHostBuilder - add enironment variables to configuration
 
-# v0005
+# v0005 (29.05.2020)
 
 ### Breaking Changes
 Changed CallContextHeaders headers. In case of their use, it is necessary to take into account the new formats.
 
 
-# v0004
+# v0004 (25.04.2020)
 
 ### Release Summary
 We have added ICallContext. This abstraction receive and hold some context data such as request id, user name, domain and so on to pass in microservices by different channels: Http-requests and queue messaging.
@@ -38,17 +66,18 @@ SecurityContextFactories now uses this context to build authentication data.
 If you used manual installation of SimpleInjector packages, you will find that DiagnosticPackage is deleted: since this release it register automatically. Just delete DiagnosticPackage registration in your code.
 
 
-# v0003
+# v0003 (26.03.2020)
 
 ### Release Summary
 Add more libraries
 
 
-# v0002
+# v0002 (19.02.2020)
 
 ### Release Summary
-The new version of ViennaNET.WebApi. * Was made based on AspNetCore 3, and .NET Core 3.1 is recommended for its use.
-Assemblies with configurators were renamed to ViennaNET.WebApi.Configurators. *, And some of them were merged or split.
+Rebranding Company.Framework to ViennaNET.
+ViennaNET.WebApi.\* Was made based on AspNetCore 3, and .NET Core 3.1 is recommended for its use.
+Assemblies with configurators were renamed to ViennaNET.WebApi.Configurators.\*, And some of them were merged or split.
 In the new version, the use of composite configurators has become easier, for example, if earlier it was necessary to call several extension methods, now only one public connection method remains in each configurator.
 
 ### Breaking Changes
@@ -57,19 +86,19 @@ In the new version, the use of composite configurators has become easier, for ex
 3. In SecurityKeysContainer, the default values ​​for the publisher and the audience have changed, which means that you need to check the compatibility of these parameters with existing authorization services. It is better in the configuration to explicitly override these fields as in all services.
 
 
-### Migration of AspNetCore applications from ViennaNET.WebApi 1. \ *. \ * (NET Core 2.2) to 2. \ *. \ * (NET Core 3.1)
+### Migration of AspNetCore applications from ViennaNET.WebApi 1.\*.\* (NET Core 2.2) to 2.\*.\* (NET Core 3.1)
 
 #### Case I. Used by DefaultKestrelRunner or DefaultHttpSysRunner
-1. In all assemblies using <TargetFramework> netcoreapp2.2 </TargetFramework>, change to <TargetFramework> netcoreapp3.1 </TargetFramework>.
+1. In all assemblies using <TargetFramework>netcoreapp2.2</TargetFramework>, change to <TargetFramework>netcoreapp3.1</TargetFramework>.
 2. In the main assembly with the service, delete the link to the ViennaNET.WebApi.DefaultConfiguration package for the service on Kestrel or ViennaNET.WebApi.DefaultHttpSysRunner for the service on HttpSys.
-3. Install the latest version of the package (2. *. *) ViennaNET.WebApi.Runners.BaseKestrel or ViennaNET.WebApi.Runners.BaseHttpSys, respectively.
-4. We also update versions of Company libraries to (2. *. *) In all assemblies. Version conflicts with third-party libraries (for example, SimpleInjector) may occur, so they also need to be updated.
+3. Install the latest version of the package (2. \*.\*) ViennaNET.WebApi.Runners.BaseKestrel or ViennaNET.WebApi.Runners.BaseHttpSys, respectively.
+4. We also update versions of Company libraries to (2. \*.\*) In all assemblies. Version conflicts with third-party libraries (for example, SimpleInjector) may occur, so they also need to be updated.
 5. Redoing Program.cs:
-  * Replace DefaultKestrelRunner with BaseKestrelRunner (for DefaultHttpSysRunner - BaseHttpSysRunner)
-  * If you used AddOnStartAction <T> / AddOnStopAction <T> extension methods, then you need to connect the ViennaNET.WebApi.Runners.Extensions package
+  * Replace DefaultKestrelRunner with BaseKestrelRunner (for DefaultHttpSysRunner - BaseHttpSysRunner)
+  * If you used AddOnStartAction<T> / AddOnStopAction<T> extension methods, then you need to connect the ViennaNET.WebApi.Runners.Extensions package
 6. We redo the configuration file:
-   * Remove unnecessary parameters from the webApiConfiguration section: logRequests and swaggerSubmit
-   * If you want to use the dynamic search for SimpleInjector packages, as is happening now, you need to add a section:
+  * Remove unnecessary parameters from the webApiConfiguration section: logRequests and swaggerSubmit
+  * If you want to use the dynamic search for SimpleInjector packages, as is happening now, you need to add a section:
 
 ```
        "simpleInjector": {
@@ -122,14 +151,14 @@ In the new version, the use of composite configurators has become easier, for ex
 
 #### Case II. The service was built manually (without using DefaultKestrelRunner or DefaultHttpSysRunner)
 1) In all assemblies using <TargetFramework>netcoreapp2.2</TargetFramework>, change to <TargetFramework>netcoreapp3.1</TargetFramework>.
-2) Assemblies with configurators were renamed to ViennaNET.WebApi.Configurators. *, As well as some of them were merged or divided, so you need to familiarize yourself with their description and select the ones you need.
+2) Assemblies with configurators were renamed to ViennaNET.WebApi.Configurators.\*, As well as some of them were merged or divided, so you need to familiarize yourself with their description and select the ones you need.
 
    Example:
 
 ```csharp
        return CompanyHostBuilder.Create()
                                 .UseKestrel()
-                                .UseCommonModule ()
+                                .UseCommonModule()
                                 .UseSimpleInjector()
                                 .UseSwaggerWithJwtAuth()
                                 .UseDiagnosing()
@@ -137,10 +166,10 @@ In the new version, the use of composite configurators has become easier, for ex
                                 .UseJwtAuth();
 ```                                
 
-3) We update versions of Company libraries to (2. *. *) In all assemblies. Version conflicts with third-party libraries (for example, SimpleInjector) may occur, so they need to be synchronized.
+3) We update versions of Company libraries to (2. \*.\*) In all assemblies. Version conflicts with third-party libraries (for example, SimpleInjector) may occur, so they need to be synchronized.
 
 
-# v0001
+# v0001 (14.01.2020)
 
 ### Release Summary
 MVP Company.Framework on NET Core 2.2

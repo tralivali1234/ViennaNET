@@ -4,8 +4,8 @@
 
 * **SessionFactoryProvider** - performs the following functions:
 1. Configures the basic parameters of NHibernate.
-1. Registers entity mappings. Supports Fluent syntax.
-1. Based on 1 and 2 points creates **SessionFactory**.
+2. Registers entity mappings. Supports Fluent syntax.
+3. Based on 1 and 2 points creates **SessionFactory**.
 
 * **ScopedSessionManager** - provides the life cycle of NHibernate sessions within a web request. It is an analog of the Nhibernate session context. Created because none of the contexts is fully suitable for solving the problem.
 
@@ -26,8 +26,7 @@
         "nick": "default",
         "dbServerType": "DB2",
         "ConnectionString": 
-            "Database = DBNAME; UserID = user_name; Server = servername: 50000; CurrentSchema = SCHEME;",
-        "useCallContext": true
+            "Database = DBNAME; UserID = user_name; Server = servername: 50000; CurrentSchema = SCHEME;"
       },
       {
         "nick": "mssql",
@@ -42,7 +41,6 @@ For each connection to the database, a separate list item is created containing 
 * dbServerType - type of database to which the connection is made.
 * connectionString - connection string to the database
 * encPassword - encrypted password. Substituted in the connection string after decryption. If the connection string already has a clear password, it will be replaced with the decrypted one. If you do not intend to encrypt the password, the field should be blank.
-* useCallContext - use an additional task of the execution context if the provider of a particular database supports this option.
 
 3a. If you just need to read the entity from the database, then just create a repository and call the Get method, passing the Id into it.
 

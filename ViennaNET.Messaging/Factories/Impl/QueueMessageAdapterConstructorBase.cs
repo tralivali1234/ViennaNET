@@ -27,45 +27,45 @@ namespace ViennaNET.Messaging.Factories.Impl
     }
 
     /// <inheritdoc />
-    public IMessageAdapter Create(string queueId, bool isDiagnostic)
+    public IMessageAdapter Create(string queueId)
     {
-      var queueConfiguration = _configuration.GetQueueConfiguration(queueId);
+      var queueConfiguration = _configuration?.GetQueueConfiguration(queueId);
 
       if (queueConfiguration == null)
       {
         throw new MessagingConfigurationException($"There are no configuration with id '{queueId}' in configuration file");
       }
 
-      return CreateInternal(queueConfiguration, isDiagnostic);
+      return CreateInternal(queueConfiguration);
     }
 
     /// <inheritdoc />
-    public IReadOnlyCollection<IMessageAdapter> CreateAll(bool isDiagnostic)
+    public IReadOnlyCollection<IMessageAdapter> CreateAll()
     {
-      return _configuration.Queues.Select(x => CreateInternal(x, isDiagnostic))
-                           .ToArray();
+      return _configuration == null
+        ? new IMessageAdapter[0]
+        : _configuration.Queues.Select(x => CreateInternal(x)).ToArray();
     }
 
     /// <inheritdoc />
     public bool HasQueue(string queueId)
     {
-      return _configuration.GetQueueConfiguration(queueId) != null;
+      return _configuration?.GetQueueConfiguration(queueId) != null;
     }
 
-    private IMessageAdapter CreateInternal(TQueueConf queueConfiguration, bool isDiagnostic)
+    private IMessageAdapter CreateInternal(TQueueConf queueConfiguration)
     {
       CheckConfigurationParameters(queueConfiguration);
 
-      return CreateAdapter(queueConfiguration, isDiagnostic);
+      return CreateAdapter(queueConfiguration);
     }
 
     /// <summary>
     ///   Создает экземпляр адаптера в соответствии с типом конструктора
     /// </summary>
     /// <param name="queueConfiguration">Конфигурация очереди</param>
-    /// <param name="isDiagnostic">Признак диагностики</param>
     /// <returns></returns>
-    protected abstract IMessageAdapter CreateAdapter(TQueueConf queueConfiguration, bool isDiagnostic);
+    protected abstract IMessageAdapter CreateAdapter(TQueueConf queueConfiguration);
 
     /// <summary>
     ///   Проверяет параметры конфигурации

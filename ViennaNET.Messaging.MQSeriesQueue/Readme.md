@@ -1,4 +1,4 @@
-# The assembly providing work with the IBM MQSeries queue
+# The assembly providing work with the IBM MQ Series queue
 ___
 ### Classes
 * **MqSeriesQueueConfiguration** - Advanced configuration for the IBM MQSeries adapter.
@@ -7,10 +7,11 @@ ___
 
  Section in the configuration file:
 
+```JavaScript
         "mqseries": { 
           "queues": [ 
             {
-			  "id": "<queue identifier>", // usually the queue name is specified
+              "id": "<queue identifier>", // usually the queue name is specified
               "processingtype": "<processing type to listen on the queue>", // one of the values ​​of MessageProcessingType
               "server": "<queue server>",
               "port": "<queue connection port>",
@@ -31,7 +32,12 @@ ___
             } 
           ] 
         }
+```
 _________________
 #### Message header features
 * Headings must not contain a character as a separator "-". 
 https://stackoverflow.com/questions/50608415/cwsia0112e-the-property-name-keep-alive-is-not-a-valid-java-identifier https://www.ibm.com/support/knowledgecenter/SSFKSJ_7.5.0/com.ibm.mq.dev.doc/q022940_.htm
+
+#### Listening mode (processingType)
+* Transactions are only supported in ThreadStrategy mode.
+* If transactions are disabled (transactionEnabled == false), then it can use both ThreadStrategy and the subscription mode (Subscribe).

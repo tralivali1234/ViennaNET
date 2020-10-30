@@ -1,4 +1,4 @@
-# Build with classes and interfaces providing a common functionality for working with queues
+# Assembly with classes and interfaces providing a common functionality for working with queues
 ___
 ### The principle of operation and use of the assembly
 The assembly contains basic interfaces and implementations for working with abstract queues. Expands by adapters to secret queues in the form of separate assemblies. The assembly does not contain information about the specific queues used.
@@ -87,7 +87,9 @@ ___
 Section in the configuration file:
 
 ```javascript
-"messaging": { "ApplicationName": <name of the application performing work with queues> }
+    "messaging": {
+        "ApplicationName": <name of the application handling the queues>,
+    }
 ```
 
 * **QueueConfigurationBase** - The base class of the configuration section. It contains the necessary information to work with all types of queues.
